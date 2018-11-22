@@ -1,0 +1,11 @@
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Quarter: FALL 2018
+
+List.c                  Provides service to Lex.c. Bi-directional List
+ListClient        		Provided by the instructor to briefly test the list.c
+List.h					List.c interface
+Lex.c                   Client opens and reads and input file args[1]. Indirectly sorts file, then outputs sorted contents of 											args[0] to args[1]
+Makefile                Used to compile all the files together
+README					Brief description of all files

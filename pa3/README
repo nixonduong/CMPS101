@@ -1,0 +1,12 @@
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Quarter: FALL 2018
+
+List.java               Provides service to Matrix.java This is a bi-directional list.
+ListTest.java       	Created by self to briefly test the List.java
+Matrix.java				Provides service to Sparse.java This is an array of bi-directional list. Could do sparse matrix operations
+MatrixTest.java 		Created by self to briefly test the Matrix.java
+Sparse.java             Client opens and reads contents from input file args[0]. Does sparse matrix operations, then outputs the results of those matrix operations to outfile 	                        args[1]
+Makefile                Used to compile all the files together
+README					Brief description of all files
