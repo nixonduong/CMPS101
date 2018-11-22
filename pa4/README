@@ -1,0 +1,13 @@
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Quarter: FALL 2018
+
+List.c                  Provides service to Graph.c. Bi-directional List
+List.h					List.c interface
+Graph.c
+Graph.h
+GraphTest.c
+FindPath.c
+Makefile                Used to compile all the files together
+README					Brief description of all files
