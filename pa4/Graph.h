@@ -1,7 +1,7 @@
 #ifndef _GRAPH_H_INCLUDE_
 #define _GRAPH_H_INCLUDE_
-#define NIL -1;
-#define INF -2;
+#define NIL -1
+#define INF -2
 #include "List.h"
 
 /* Exported Type */
