@@ -37,7 +37,7 @@ Graph newGraph(int n){ // returns a Graph pointing to a newly created GraphObj r
 
 void freeGraph(Graph *pG){ // frees all dynamic memory associated with the Graph *pG, then sets *pG to NUL
 	for(int i = 0; i <= (*pG)->order; i++){
-		freeList(&(*pG)->adjList[i]));
+		freeList(&(*pG)->adjList[i]);
 	}
 	free((*pG)->adjList);
 	free((*pG)->color);
@@ -172,6 +172,7 @@ void addArc(Graph G, int u, int v){ // inserts a new directed edge (v is added t
 	}
 	if(length(G->adjList[u]) == 0){
 		append(G->adjList[u], v);
+		G->size++;
 	}
 	else{
 		moveFront(G->adjList[u]);
@@ -205,28 +206,30 @@ void BFS(Graph G, int s){ // runs BFS on G
 		}
 	}
 	int x;
+	G->source = s;
 	G->color[s] = GRAY;
 	G->distance[s] = 0;
 	G->parent[s] = NIL;
 	List queue = newList();
+	List temp;
 	append(queue, s);
-	while(length(queue) != 0){
-		moveFront(queue);
-		x = get(queue);
+	while(length(queue) != 0){ // while Q != 0
+		x = front(queue);   // dequeue(Q)
 		deleteFront(queue);
-		for(int y = 0; y < length(G->adjList[x]); y++){
-			if(G->color[y] == WHITE){
-				G->color[y] = GRAY;
-				G->distance[y] = G->distance[x] + 1;
-				G->parent[y] = x;
-				append(queue, y);
+		temp = G->adjList[x];
+		moveFront(temp); 
+		while(index(temp) != -1){  // for all elements in adjList[x]
+			if(G->color[get(temp)] == WHITE){
+				G->color[get(temp)] = GRAY;
+				G->distance[get(temp)] = G->distance[x] + 1;
+				G->parent[get(temp)] = x;
+				append(queue, get(temp));
 			}
+			moveNext(temp);
 		}
 		G->color[x] = BLACK;
 	}
-	//free(&queue);
 }
-
 /* Other operations */
 void printGraph(FILE* out, Graph G){ // prints the adjacency list representation of G to the file pointed to by out
 	if(out == NULL || G == NULL){
