@@ -14,7 +14,7 @@ typedef struct GraphObj{
 	int order;
 	int size;
 	int source;
-};
+}GraphObj;
 
 /* Constructors - Destructors */
 Graph newGraph(int n){ // returns a Graph pointing to a newly created GraphObj representing a graph having n vertices and no edges
@@ -26,21 +26,23 @@ Graph newGraph(int n){ // returns a Graph pointing to a newly created GraphObj r
 	graph->order = n;
 	graph->size = 0;
 	graph->source = NIL;
-	for(int i = 1; i <= n; i++){
+	for(int i = 0; i <= n; i++){
 		graph->adjList[i] = newList();
+		graph->color[i] = WHITE;
+		graph->distance[i] = INF;
+		graph->parent[i] = NIL;
 	}
 	return (graph);
 }
 
-void freeGraph(Graph *pG){ // frees all dynamic memory associated with the Graph *pG, then sets *pG to NULL
-	Graph ptr = *pG;
-	for(int i = 1; i <= ptr->order; i++){
-		freeList(&(ptr->adjList[i]));
+void freeGraph(Graph *pG){ // frees all dynamic memory associated with the Graph *pG, then sets *pG to NUL
+	for(int i = 0; i <= (*pG)->order; i++){
+		freeList(&(*pG)->adjList[i]));
 	}
-	free(ptr->adjList);
-	free(ptr->color);
-	free(ptr->distance);
-	free(ptr->parent);
+	free((*pG)->adjList);
+	free((*pG)->color);
+	free((*pG)->distance);
+	free((*pG)->parent);
 	free(*pG);
 	*pG = NULL;	
 }
@@ -71,7 +73,9 @@ int getSource(Graph G){ // returns source vertex most recently used in BFS() or 
 		fprintf(stderr, "getSource() called on NULL graph reference");
 		exit(1);
 	}
-	return (G->source);
+	else{
+		return (G->source);
+	}
 }
 
 int getParent(Graph G, int u){ // Pre: 1<=u<=getOrder(G) returns parent of u
@@ -79,13 +83,11 @@ int getParent(Graph G, int u){ // Pre: 1<=u<=getOrder(G) returns parent of u
 		fprintf(stderr, "getParent() called on NULL graph reference");
 		exit(1);
 	}
-	else if(u >= 1 && u <= getOrder(G)){
-		return (G->parent[u]);
-	}
-	else{
+	if(u < 1 || u > getOrder(G)){
 		fprintf(stderr, "getParent() called on vertex out of bounds");
 		exit(1);
 	}
+	return G->parent[u];
 }
 
 int getDist(Graph G, int u){ // Pre: 1<=u<=getOrder(G) returns distance from most recent BFS source to u or INF if no path
@@ -93,12 +95,14 @@ int getDist(Graph G, int u){ // Pre: 1<=u<=getOrder(G) returns distance from mos
 		fprintf(stderr, "getDist() called on NULL graph reference");
 		exit(1);
 	}
-	if(u >= 1 && u <= getOrder(G)){
-		return (G->distance[u]);
-	}
 	if(getSource(G) == NIL){
-		return (INF);
+		return INF;
 	}
+	if(u < 1 || u > getOrder(G)){
+		fprintf(stderr, "GetDist() arguments are out of bounds");
+		exit(1);
+	}
+	return (G->distance[u]);
 }
 
 void getPath(List L, Graph G, int u){ // appends to the List L the vertices of a shortest path in G from source u, or appends to L the value NIL if no such path exist Pre: getSource(G) != NIL && 1<=u<=getOrder(G)
@@ -134,7 +138,13 @@ void makeNull(Graph G){ // deletes all edges of G, restoring it to its original 
 	}
 	for(int i = 1; i <= getOrder(G); i++){
 		clear(G->adjList[i]);
+		G->color[i] = WHITE;
+		G->distance[i] = INF;
+		G->parent[i] = NIL;
 	}
+	G->order = 1;
+	G->size = 0;
+	G->source = NIL;
 }
 
 void addEdge(Graph G, int u, int v){ // inserts a new edge joining u to v (u is added to the adjacency List of v and v to the adjacency list of u)
@@ -142,7 +152,7 @@ void addEdge(Graph G, int u, int v){ // inserts a new edge joining u to v (u is 
 		fprintf(stderr, "addEdge() called on NULL grapg reference");
 		exit(1);
 	}
-	if(!(1 <= u) || !(u <= getOrder(G)) || !(1 <= v) || !(getOrder(G))){
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)){
 		fprintf(stderr, "addEdge() called on arguments out of bounds");
 		exit(1);
 	}
@@ -156,8 +166,8 @@ void addArc(Graph G, int u, int v){ // inserts a new directed edge (v is added t
 		fprintf(stderr, "addArc() called on NULL graph reference");
 		exit(1);
 	}
-	if(!(1 <= u) || !(u <= getOrder(G)) || !(1 <= v) || !(v <= getOrder(G))){
-		fprintf(stderr, "addArc() arguments out of bounds");
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)){
+		fprintf(stderr, "addArc() called on arguments out of bounds");
 		exit(1);
 	}
 	if(length(G->adjList[u]) == 0){
@@ -214,7 +224,7 @@ void BFS(Graph G, int s){ // runs BFS on G
 		}
 		G->color[x] = BLACK;
 	}
-	free(&queue);
+	//free(&queue);
 }
 
 /* Other operations */
@@ -229,13 +239,4 @@ void printGraph(FILE* out, Graph G){ // prints the adjacency list representation
 		fprintf(out, "\n");
 	}
 }
-
-
-
-
-
-
-
-
-
 
