@@ -4,10 +4,10 @@ Professor: Patrick Tantalo
 Quarter: FALL 2018
 
 List.c                  Provides service to Graph.c. Bi-directional List
-List.h					List.c interface
-Graph.c
-Graph.h
-GraphTest.c
-FindPath.c
+List.h					List.c interface to communicate with clients
+Graph.c                 Provides service to clients. In this case, provides servies to FindPath.c and GraphTest.c Adjacency list representation of graph.
+Graph.h					Graph.c interface to communicate with clients
+GraphTest.c             Used to do a brief test on Graph.c
+FindPath.c              Main client, reads an inputfile of graph data and outputs an adjacency list representation of that graph and path ways to given source to vertex
 Makefile                Used to compile all the files together
 README					Brief description of all files
