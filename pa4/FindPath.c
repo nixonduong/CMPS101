@@ -12,14 +12,12 @@ Clients: none
 #include <stdlib.h>
 #include <string.h>
 #include "Graph.h"
-
+#include "List.h"
 #define MAX_LEN 160
 
 int main(int argc, char* argv[]){
 	FILE *in, *out;
-	char line[MAX_LEN];
-	char temp;
-	char X,Y;
+	int X,Y;
 	int SIZE_GRAPH;
 	// check command line for correct number of arguments
 	if(argc != 3 ){
@@ -38,42 +36,37 @@ int main(int argc, char* argv[]){
         exit(1);
     }
 
-    if(fgets(&temp,MAX_LEN,in) != NULL){
-    	SIZE_GRAPH = atoi(&temp);
-    }
+   	fscanf(in, "%d", &SIZE_GRAPH);
     Graph graph = newGraph(SIZE_GRAPH);
-    while(fgets(line,MAX_LEN,in) != NULL){
-    	X = line[0];
-    	Y = line[2];
-    	if(atoi(&X) != 0 && atoi(&Y) != 0){
-    		addEdge(graph, atoi(&X), atoi(&Y));
+    while(fgetc(in) != EOF){
+    	fscanf(in, "%d %d", &X, &Y);
+    	if(X != 0 && Y != 0){
+    		addEdge(graph, X, Y);
     	}
     	else{
     		break;
     	}
     }
-
     printGraph(out,graph);
-    List L = newList();
-    while(fgets(line,MAX_LEN,in) != NULL){
-    	X = line[0];
-    	Y = line[2];
-    	if(atoi(&X) != 0 && atoi(&Y) != 0){
-    		BFS(graph, atoi(&X));
-    		getPath(L, graph, atoi(&Y));
-    		if(front(L) == NIL){
-    			fprintf(out, "The distance from ",atoi(&X), " to ", atoi(&Y), " is infinity\n");
-    			fprintf(out, "No ", atoi(&X), "-", atoi(&Y), " path exists");
+	fprintf(out, "\n");
+    while(fgetc(in) != EOF){
+    	fscanf(in, "%d %d", &X, &Y);
+    	if(X != 0 && Y != 0){
+    		BFS(graph, X);
+    		if(getDist(graph, Y) == INF){
+    			fprintf(out, "The distance from %d to %d is infinity\n", X, Y);
+    			fprintf(out, "No %d-%d path exists", X, Y);
     			fprintf(out, "\n");
     		}
     		else{
-    			fprintf(out, "The distance from ",atoi(&X), " to ", atoi(&Y), " is ", length(L), "\n");
-    			fprintf(out, "A shortest ", atoi(&X), "-", atoi(&Y), " path is: ");
+				List L = newList();
+				getPath(L, graph, Y);
+    			fprintf(out, "The distance from %d to %d is %d\n", X, Y, length(L) - 1);
+    			fprintf(out, "A shortest %d-%d path is: ", X, Y);
     			printList(out, L);
     			fprintf(out, "\n");
-
+				freeList(&L);
     		}
-    		clear(L);
     	}
     	else{
     		break;
@@ -82,7 +75,6 @@ int main(int argc, char* argv[]){
     //closes files
     fclose(in);
     fclose(out);
-    freeList(&L);
     freeGraph(&graph);
 }
 
