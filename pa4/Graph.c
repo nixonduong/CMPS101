@@ -1,7 +1,16 @@
+/*
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Course: CMPS101
+Programming Assignment: PA4
+Description: Implementation of Graph.c using adjacency List representation
+File: Graph.c
+Clients: FindPath.c, GraphTest.c
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "Graph.h"
-
 #define WHITE -1
 #define GRAY 0
 #define BLACK 1
@@ -36,8 +45,11 @@ Graph newGraph(int n){ // returns a Graph pointing to a newly created GraphObj r
 }
 
 void freeGraph(Graph *pG){ // frees all dynamic memory associated with the Graph *pG, then sets *pG to NUL
-	for(int i = 0; i <= (*pG)->order; i++){
-		freeList(&(*pG)->adjList[i]);
+	if(pG == NULL){
+		exit(1);
+	}
+	for(int i = 0; i <= getOrder(*pG); i++){
+		freeList(&((*pG)->adjList[i]));
 	}
 	free((*pG)->adjList);
 	free((*pG)->color);
@@ -110,23 +122,23 @@ void getPath(List L, Graph G, int u){ // appends to the List L the vertices of a
 		fprintf(stderr, "getPath() called on NULL graph reference");
 		exit(1);
 	}
-	if(getSource(G) == NIL){
-		fprintf(stderr, "getPath() : getSource(): source not yet defined");
-		exit(1);
-	}
 	if(u < 1 || u > getOrder(G)){
 		fprintf(stderr, "getPath(): vertex out of bounds");
 		exit(1);
 	}
-	if(u == getSource(G)){
-		prepend(L, u);
+	if(getSource(G) == NIL){
+		fprintf(stderr, "getPath() : getSource(): source not yet defined");
+		exit(1);
+	}
+	if(getSource(G) == u){
+		append(L, u);
 	}
 	else if(getParent(G, u) == NIL){
 		append(L, NIL);
 	}
 	else{
 		getPath(L, G, getParent(G, u));
-		prepend(L, u);
+		append(L, u);
 	}
 }
 
@@ -242,4 +254,3 @@ void printGraph(FILE* out, Graph G){ // prints the adjacency list representation
 		fprintf(out, "\n");
 	}
 }
-
