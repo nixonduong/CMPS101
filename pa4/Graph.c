@@ -241,7 +241,7 @@ void BFS(Graph G, int s){ // runs BFS on G
 		}
 		G->color[x] = BLACK;
 	}
-	freeList(queue);
+	freeList(&queue);
 }
 /* Other operations */
 void printGraph(FILE* out, Graph G){ // prints the adjacency list representation of G to the file pointed to by out
