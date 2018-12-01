@@ -1,0 +1,14 @@
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Quarter: FALL 2018
+PA 5
+
+List.c                  Provides service to Graph.c. Bi-directional List
+List.h					List.c interface to communicate with clients
+Graph.c                 Provides service to clients. In this case, provides servies to FindPath.c and GraphTest.c Adjacency list representation of graph.
+Graph.h					Graph.c interface to communicate with clients
+GraphTest.c             Used to do a brief test on Graph.c
+FindCompnents.c         client of graph module. Determines strong components of input graph and outputs it
+Makefile                Used to compile all the files together
+README					Brief description of all files
