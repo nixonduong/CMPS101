@@ -8,6 +8,7 @@ Description: Provides an interface for clients
 File: List.h
 Clients: Graph.h
 */
+#include <stdio.h>
 #ifndef _LIST_H_INCLUDE_
 #define _LIST_H_INCLUDE_
 //Exported type 

@@ -1,8 +1,9 @@
-#ifndef _GRAPH_H_INCLUDE_
-#define _GRAPH_H_INCLUDE_
+#include "List.h"
+#include <stdio.h>
 #define NIL -1
 #define UNDEF -2
-#include "List.h"
+#ifndef _GRAPH_H_INCLUDE_
+#define _GRAPH_H_INCLUDE_
 
 /*Exported type*/
 typedef struct GraphObj* Graph;

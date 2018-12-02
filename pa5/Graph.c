@@ -1,13 +1,18 @@
+#include "Graph.h"
+#include <stdlib.h>
+#include <stdio.h>
 #define WHITE -1
-#define GRAY -2
-#define BLACK -3
+#define GRAY 0
+#define BLACK 1
+
+void visit(Graph, int, int*, List);
 
 struct GraphObj{
-	List adjList*;
-	int color*;
-	int discoverTime*;
-	int finishTime*;
-	int parent*;
+	List* adjList;
+	int* color;
+	int* discoverTime;
+	int* finishTime;
+	int* parent;
 	int order; // number of vertices
 	int size; // number of edges
 }GraphObj;
@@ -25,21 +30,21 @@ Graph newGraph(int n){ // returns reference to a new graph with n vertices and 0
 	for(int i = 1; i <= n; i++){
 		graph->adjList[i] = newList();
 		graph->color[i] = WHITE;
-		graph->discoverTime = UNDEF;
-		graph->finishTime = UNDEF;
-		graph->parent = NIL;
+		graph->discoverTime[i] = UNDEF;
+		graph->finishTime[i] = UNDEF;
+		graph->parent[i] = NIL;
 	}	
 	return graph;
 }
 
 void freeGraph(Graph* pG){ // frees all heap memory associated with pG and sets pG to NULL
 	for(int i = 1; i <= getOrder(*pG); i++){
-		freeList(&(*pG->adjList[i]));
+		freeList(&((*pG)->adjList[i]));
 	}
-	free(*pG->color);
-	free(*pG->discoverTime);
-	free(*pG->finishTime);
-	free(*pG->parent);
+	free((*pG)->color);
+	free((*pG)->discoverTime);
+	free((*pG)->finishTime);
+	free((*pG)->parent);
 	free(*pG);
 	*pG = NULL;
 }
@@ -115,8 +120,8 @@ void addArc(Graph G, int u, int v){ // adds an arc between vertex u and vertex v
 	while(index(G->adjList[u]) > 0 && v < get(G->adjList[u])){
 		moveNext(G->adjList[u]);
 	}
-	if(index(G->adjList[u] == -1)){
-		append(G->adjList[u], v)
+	if(index(G->adjList[u]) == -1){
+		append(G->adjList[u], v);
 	}
 	else{
 		insertBefore(G->adjList[u], v);
@@ -137,8 +142,8 @@ void addEdge(Graph G, int u, int v){ // adds an edge between vertex u and vertex
 		fprintf(stderr, "addEdge() called on vertex B out of bounds");
 		exit(1);
 	}
-	addArc(u, v);
-	addArc(v, u);
+	addArc(G, u, v);
+	addArc(G, v, u);
 	G->size--;
 }
 
@@ -152,9 +157,10 @@ void DFS(Graph G, List S){
 		fprintf(stderr, "DFS() called on incorrect List");
 		exit(1);
 	}
+/*
 // (ii) S contains some permutation of the integers {1,2,3,...,n}
 	int checker[getOrder(G) + 1];
-	for(int i = 1 <= getOrder(G); i++){
+	for(int i = 1;i <= getOrder(G); i++){
 		checker[i] = 0;
 	}
 	moveFront(S);
@@ -162,7 +168,7 @@ void DFS(Graph G, List S){
 		checker[get(S)] = 1;
 		moveNext(S);
 	}
-	for(int i = 1 <= getOrder(G); i++){
+	for(int i = 1;i <= getOrder(G); i++){
 		if(checker[i] == 0){
 			fprintf(stderr, "DFS() called on a list with no permutation of integers {1,2,3,...,n}");
 			exit(1);
@@ -170,6 +176,7 @@ void DFS(Graph G, List S){
 		}
 	}
 // DFS()
+*/
 	for(int x = 1; x <= getOrder(G); x++){
 		G->color[x] = WHITE;
 		G->parent[x] = NIL;
@@ -195,7 +202,7 @@ void visit(Graph G, int x, int* time, List S){
 	for(int y = 0; y < length(G->adjList[x]); y++){
 		if(G->color[y] == WHITE){
 			G->parent[y] = x;
-			visit(G, y, time);
+			visit(G, y, time, S);
 		}
 	}
 	G->color[x] = BLACK;
@@ -209,7 +216,7 @@ Graph transpose(Graph G){ // returns a reference to a new graph obj representing
 		fprintf(stderr, "transpose() called on NULL graph reference");
 		exit(1);	
 	}
-	Graph transpose = newGraph();
+	Graph transpose = newGraph(getOrder(G));
 	for(int i = 1; i <= getOrder(G); i++){
 		moveFront(G->adjList[i]);
 		while(index(G->adjList[i]) > 0){
