@@ -203,6 +203,50 @@ void visit(Graph G, int x, int* time, List S){
 	prepend(S, x);
 }
 
+/*Other functions */
+Graph transpose(Graph G){ // returns a reference to a new graph obj representing the transpose 
+	if(G == NULL){
+		fprintf(stderr, "transpose() called on NULL graph reference");
+		exit(1);	
+	}
+	Graph transpose = newGraph();
+	for(int i = 1; i <= getOrder(G); i++){
+		moveFront(G->adjList[i]);
+		while(index(G->adjList[i]) > 0){
+			addArc(transpose, get(G->adjList[i]), i);
+			moveNext(G->adjList[i]);
+		}
+	}
+	return transpose;
+}
+
+Graph copyGraph(Graph G){ // returns a reference to a new graph obj representing a copy of G
+	if(G == NULL){
+		fprintf(stderr, "copyGraph() called on a NULL graph reference");
+		exit(1);
+	}
+	Graph copy = newGraph(getOrder(G));
+	for(int i = 1; i <= getOrder(G); i++){
+		moveFront(G->adjList[i]);
+		while(index(G->adjList[i]) > 0){
+			append(copy->adjList[i], get(G->adjList[i]));
+			moveNext(G->adjList[i]);
+		}
+	}
+	return copy;
+}
+
+void printGraph(FILE* out, Graph G){
+	if(G == NULL){
+		fprintf(stderr, "printGraph() called on a NULL graph reference");
+		exit(1);
+	}
+	for(int i = 1; i <= getOrder(G); i++){
+		fprintf(out, "%d: ", i);
+		printList(out, G->adjList[i]);
+		fprintf(out, "\n");
+	}
+}
 
 
 
