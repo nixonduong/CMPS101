@@ -142,7 +142,66 @@ void addEdge(Graph G, int u, int v){ // adds an edge between vertex u and vertex
 	G->size--;
 }
 
-
+void DFS(Graph G, List S){
+	if(G == NULL){
+		fprintf(stderr, "DFS() called on a NULL reference to graph");
+		exit(1);
+	}
+// (i) length(S) == n
+	if(length(S) != getOrder(G)){
+		fprintf(stderr, "DFS() called on incorrect List");
+		exit(1);
+	}
+// (ii) S contains some permutation of the integers {1,2,3,...,n}
+	int checker[getOrder(G) + 1];
+	for(int i = 1 <= getOrder(G); i++){
+		checker[i] = 0;
+	}
+	moveFront(S);
+	while(index(S) > 0){
+		checker[get(S)] = 1;
+		moveNext(S);
+	}
+	for(int i = 1 <= getOrder(G); i++){
+		if(checker[i] == 0){
+			fprintf(stderr, "DFS() called on a list with no permutation of integers {1,2,3,...,n}");
+			exit(1);
+			break;
+		}
+	}
+// DFS()
+	for(int x = 1; x <= getOrder(G); x++){
+		G->color[x] = WHITE;
+		G->parent[x] = NIL;
+	}
+	int time = 0;
+	for(int i = 0; i < length(S); i++){
+		moveBack(S);
+		prepend(S, get(S));
+		deleteBack(S);
+	}
+	for(int j = 0; j < length(S); j++){
+		moveBack(S);
+		if(G->color[get(S)] == WHITE){
+			visit(G, get(S), &time, S);
+		}
+		deleteBack(S);
+	}	
+}
+/*Helper function of DFS() */
+void visit(Graph G, int x, int* time, List S){
+	G->color[x] = GRAY;
+	G->discoverTime[x] = ++(*time);
+	for(int y = 0; y < length(G->adjList[x]); y++){
+		if(G->color[y] == WHITE){
+			G->parent[y] = x;
+			visit(G, y, time);
+		}
+	}
+	G->color[x] = BLACK;
+	G->finishTime[x] = ++(*time);
+	prepend(S, x);
+}
 
 
 
