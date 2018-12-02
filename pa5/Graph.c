@@ -177,36 +177,40 @@ void DFS(Graph G, List S){
 	}
 // DFS()
 */
-	for(int x = 1; x <= getOrder(G); x++){
-		G->color[x] = WHITE;
-		G->parent[x] = NIL;
+	for(int x = 1; x <= getOrder(G); x++){ // for all x in V
+		G->color[x] = WHITE; // set the color of all vertices white
+		G->parent[x] = NIL; // set the parent of all vertices to NIL
 	}
-	int time = 0;
-	for(int i = 0; i < length(S); i++){
+	int time = 0; // initialize time to 0
+	for(int i = 0; i < length(S); i++){ // reverse the list
 		moveBack(S);
 		prepend(S, get(S));
 		deleteBack(S);
 	}
-	for(int j = 0; j < length(S); j++){
+	int counter = 0;
+	for(int j = 0; j < (getOrder(G) - counter); j++){ // for all x in V
 		moveBack(S);
-		if(G->color[get(S)] == WHITE){
-			visit(G, get(S), &time, S);
+		if(G->color[get(S)] == WHITE){ // if the color of the vertex is white
+			visit(G, get(S), &time, S); // visit the vertex
 		}
+		counter++;
 		deleteBack(S);
 	}	
 }
 /*Helper function of DFS() */
 void visit(Graph G, int x, int* time, List S){
-	G->color[x] = GRAY;
-	G->discoverTime[x] = ++(*time);
-	for(int y = 0; y < length(G->adjList[x]); y++){
-		if(G->color[y] == WHITE){
-			G->parent[y] = x;
-			visit(G, y, time, S);
+	G->color[x] = GRAY; // set color of visit vertex to gray
+	G->discoverTime[x] = ++(*time); // set the discover time of the visit vertex
+	moveFront(G->adjList[x]);
+	while(index(G->adjList[x]) > 0){	
+		if(G->color[get(G->adjList[x])] == WHITE){ // if the color of y is white
+			G->parent[get(G->adjList[x])] = x; // set y parent to x
+			visit(G, get(G->adjList[x]), time, S); // visit y
 		}
+		moveNext(G->adjList[x]);
 	}
-	G->color[x] = BLACK;
-	G->finishTime[x] = ++(*time);
+	G->color[x] = BLACK; // set color of x to black
+	G->finishTime[x] = ++(*time); // set finish of x 
 	prepend(S, x);
 }
 
