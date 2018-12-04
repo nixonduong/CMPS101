@@ -159,13 +159,10 @@ void DFS(Graph G, List S){
 		exit(1);
 	}
 // (i) length(S) == n
-	/*
 	if(length(S) != getOrder(G)){
 		fprintf(stderr, "DFS() called on incorrect List");
 		exit(1);
 	}
-*/
-
 // (ii) S contains some permutation of the integers {1,2,3,...,n}
 	int checker[getOrder(G) + 1];
 	for(int i = 1;i <= getOrder(G); i++){
