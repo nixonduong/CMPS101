@@ -6,7 +6,7 @@ Course: CMPS101
 Programming Assignment: PA5
 Description: Provides an interface for clients
 File: List.h
-Clients: Graph.h
+Clients: Graph.h, FindComponents.c
 */
 #include <stdio.h>
 #ifndef _LIST_H_INCLUDE_

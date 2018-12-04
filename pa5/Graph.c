@@ -1,3 +1,12 @@
+/*
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Course: CMPS101
+Programming Assignment: PA5
+Description: Implementation of Graph.h
+File: Graph.c
+*/
 #include "Graph.h"
 #include <stdlib.h>
 #include <stdio.h>

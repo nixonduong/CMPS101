@@ -1,3 +1,12 @@
+/*
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Course: CMPS101
+Programming Assignment: PA5
+Description: Main client. Reads input file and displays the adjcency list representation, then preforms dfs to find SCC of the graph. All outputs are displayed outfile
+File: FindComponents.c
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "Graph.h"

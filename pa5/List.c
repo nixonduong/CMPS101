@@ -4,9 +4,9 @@ CruzID: niduong
 Professor: Patrick Tantalo
 Course: CMPS101
 Programming Assignment: PA5
-Description: Provides a bi-directional list to clients
+Description: Implementation of List.h
 File: List.c
-Clients: Graph.h
+
 */
 #include <stdio.h>
 #include <stdlib.h>

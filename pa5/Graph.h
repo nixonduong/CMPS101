@@ -1,3 +1,13 @@
+/*
+Student: Nixon Duong
+CruzID: niduong
+Professor: Patrick Tantalo
+Course: CMPS101
+Programming Assignment: PA5
+Description: Provides a graph interface to clients. The graph provided could perform DFS
+File: Graph.h
+Clients: FindComponents.c
+*/
 #include "List.h"
 #include <stdio.h>
 #define NIL -1
