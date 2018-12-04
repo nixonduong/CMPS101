@@ -165,14 +165,14 @@ void DFS(Graph G, List S){
 		exit(1);
 	}
 */
-/*
+
 // (ii) S contains some permutation of the integers {1,2,3,...,n}
 	int checker[getOrder(G) + 1];
 	for(int i = 1;i <= getOrder(G); i++){
 		checker[i] = 0;
 	}
 	moveFront(S);
-	while(index(S) > 0){
+	while(index(S) != -1){
 		checker[get(S)] = 1;
 		moveNext(S);
 	}
@@ -184,8 +184,6 @@ void DFS(Graph G, List S){
 		}
 	}
 // DFS()
-*/
-
 	for(int i = 1; i <= getOrder(G); i++){
 		G->color[i] = WHITE;
 		G->parent[i] = NIL;
