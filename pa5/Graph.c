@@ -41,6 +41,7 @@ void freeGraph(Graph* pG){ // frees all heap memory associated with pG and sets 
 	for(int i = 1; i <= getOrder(*pG); i++){
 		freeList(&((*pG)->adjList[i]));
 	}
+	free((*pG)->adjList);
 	free((*pG)->color);
 	free((*pG)->discoverTime);
 	free((*pG)->finishTime);
@@ -116,19 +117,24 @@ void addArc(Graph G, int u, int v){ // adds an arc between vertex u and vertex v
 		fprintf(stderr, "addArc() called on vertex B out of bounds");
 		exit(1);
 	}
-	moveFront(G->adjList[u]);
-	while(index(G->adjList[u]) > 0 && v < get(G->adjList[u])){
-		moveNext(G->adjList[u]);
-	}
-	if(index(G->adjList[u]) == -1){
+	if(length(G->adjList[u]) == 0){
 		append(G->adjList[u], v);
+		G->size++;
 	}
 	else{
-		insertBefore(G->adjList[u], v);
+		moveFront(G->adjList[u]);
+		while(index(G->adjList[u]) != -1 && get(G->adjList[u]) < v){
+			moveNext(G->adjList[u]);
+		}
+		if(index(G->adjList[u]) >= 0){
+			insertBefore(G->adjList[u], v);
+		}
+		else{
+			append(G->adjList[u], v);
+		}
+		G->size++;
 	}
-	G->size++;
 }
-
 void addEdge(Graph G, int u, int v){ // adds an edge between vertex u and vertex v
 	if(G == NULL){
 		fprintf(stderr, "addEdge() called on a NULL reference to graph");
@@ -153,10 +159,12 @@ void DFS(Graph G, List S){
 		exit(1);
 	}
 // (i) length(S) == n
+	/*
 	if(length(S) != getOrder(G)){
 		fprintf(stderr, "DFS() called on incorrect List");
 		exit(1);
 	}
+*/
 /*
 // (ii) S contains some permutation of the integers {1,2,3,...,n}
 	int checker[getOrder(G) + 1];
@@ -177,41 +185,46 @@ void DFS(Graph G, List S){
 	}
 // DFS()
 */
-	for(int x = 1; x <= getOrder(G); x++){ // for all x in V
-		G->color[x] = WHITE; // set the color of all vertices white
-		G->parent[x] = NIL; // set the parent of all vertices to NIL
+
+	for(int i = 1; i <= getOrder(G); i++){
+		G->color[i] = WHITE;
+		G->parent[i] = NIL;
+		G->discoverTime[i] = UNDEF;
+		G->finishTime[i] = UNDEF;
 	}
-	int time = 0; // initialize time to 0
-	for(int i = 0; i < length(S); i++){ // reverse the list
-		moveBack(S);
-		prepend(S, get(S));
-		deleteBack(S);
+	int time = 0;
+	List temp = copyList(S);
+	int tempLen = length(S);
+	clear(S);
+	for(int i = 0; i < tempLen; i++){
+		moveBack(temp);
+		append(S,get(temp));
+		deleteBack(temp);
 	}
-	int counter = 0;
-	for(int j = 0; j < (getOrder(G) - counter); j++){ // for all x in V
+	freeList(&temp);
+	for(int i = 0; i < tempLen; i++){
 		moveBack(S);
-		if(G->color[get(S)] == WHITE){ // if the color of the vertex is white
-			visit(G, get(S), &time, S); // visit the vertex
+		if(G->color[get(S)] == WHITE){
+			visit(G, get(S), &time, S);
 		}
-		counter++;
 		deleteBack(S);
-	}	
+	}
 }
 /*Helper function of DFS() */
 void visit(Graph G, int x, int* time, List S){
-	G->color[x] = GRAY; // set color of visit vertex to gray
-	G->discoverTime[x] = ++(*time); // set the discover time of the visit vertex
+	G->color[x] = GRAY;
+	G->discoverTime[x] = ++(*time);
 	moveFront(G->adjList[x]);
-	while(index(G->adjList[x]) > 0){	
-		if(G->color[get(G->adjList[x])] == WHITE){ // if the color of y is white
-			G->parent[get(G->adjList[x])] = x; // set y parent to x
-			visit(G, get(G->adjList[x]), time, S); // visit y
+	while(index(G->adjList[x]) != -1){
+		if(G->color[get(G->adjList[x])] == WHITE){
+			G->parent[get(G->adjList[x])] = x;
+			visit(G, get(G->adjList[x]), time, S);
 		}
 		moveNext(G->adjList[x]);
 	}
-	G->color[x] = BLACK; // set color of x to black
-	G->finishTime[x] = ++(*time); // set finish of x 
-	prepend(S, x);
+	G->color[x] = BLACK;
+	G->finishTime[x] = ++(*time);
+	prepend(S,x);
 }
 
 /*Other functions */
@@ -223,7 +236,7 @@ Graph transpose(Graph G){ // returns a reference to a new graph obj representing
 	Graph transpose = newGraph(getOrder(G));
 	for(int i = 1; i <= getOrder(G); i++){
 		moveFront(G->adjList[i]);
-		while(index(G->adjList[i]) > 0){
+		while(index(G->adjList[i]) != -1){
 			addArc(transpose, get(G->adjList[i]), i);
 			moveNext(G->adjList[i]);
 		}
@@ -239,7 +252,7 @@ Graph copyGraph(Graph G){ // returns a reference to a new graph obj representing
 	Graph copy = newGraph(getOrder(G));
 	for(int i = 1; i <= getOrder(G); i++){
 		moveFront(G->adjList[i]);
-		while(index(G->adjList[i]) > 0){
+		while(index(G->adjList[i]) != -1){
 			append(copy->adjList[i], get(G->adjList[i]));
 			moveNext(G->adjList[i]);
 		}
@@ -258,36 +271,3 @@ void printGraph(FILE* out, Graph G){
 		fprintf(out, "\n");
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
